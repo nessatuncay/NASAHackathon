@@ -28,23 +28,38 @@ public class InteractionSystem : MonoBehaviour
         // Don't check if we're already showing info
         if (isShowingInfo) return;
 
-        // Raycast forward to detect interactables
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, interactionRange, interactableLayer))
-        {
-            InteractableObject interactable = hit.collider.GetComponent<InteractableObject>();
+        // Check for all colliders in range around the player
+        Collider[] colliders = Physics.OverlapSphere(transform.position, interactionRange, interactableLayer);
 
+        // Find the closest interactable
+        InteractableObject closestInteractable = null;
+        float closestDistance = interactionRange;
+
+        foreach (Collider col in colliders)
+        {
+            InteractableObject interactable = col.GetComponent<InteractableObject>();
             if (interactable != null)
             {
-                currentInteractable = interactable;
-                ShowPrompt("Press E to interact");
-                return;
+                float distance = Vector3.Distance(transform.position, col.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestInteractable = interactable;
+                }
             }
         }
 
-        // No interactable found
-        currentInteractable = null;
-        HidePrompt();
+        // Update current interactable
+        if (closestInteractable != null)
+        {
+            currentInteractable = closestInteractable;
+            ShowPrompt("Press E to interact");
+        }
+        else
+        {
+            currentInteractable = null;
+            HidePrompt();
+        }
     }
 
     void HandleInteractionInput()

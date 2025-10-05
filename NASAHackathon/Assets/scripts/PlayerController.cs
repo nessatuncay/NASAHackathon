@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private float speed = 4;
+    private float rotationSpeed = 10f;
 
     void Update()
     {
@@ -15,20 +16,20 @@ public class PlayerController : MonoBehaviour
 
         if (Keyboard.current.dKey.isPressed)
         {
-            xDir = 2.0f;
+            xDir = 3.0f;
         }
         else if (Keyboard.current.aKey.isPressed)
         {
-            xDir = -2.0f;
+            xDir = -3.0f;
         }
 
         if (Keyboard.current.wKey.isPressed)
         {
-            zDir = 2.0f;
+            zDir = 3.0f;
         }
         else if (Keyboard.current.sKey.isPressed)
         {
-            zDir = -2.0f;
+            zDir = -3.0f;
         }
 
         float dz = zDir * speed * dt;
@@ -36,10 +37,16 @@ public class PlayerController : MonoBehaviour
 
         float dx = xDir * speed * dt;
         transform.position = transform.position + new Vector3(dx, 0.0f, 0.0f);
+
+        // Rotate player towards movement direction
+        if (xDir != 0.0f || zDir != 0.0f)
+        {
+            Vector3 moveDirection = new Vector3(xDir, 0, zDir).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * dt);
+        }
     }
 }
-
-
 
 
 
