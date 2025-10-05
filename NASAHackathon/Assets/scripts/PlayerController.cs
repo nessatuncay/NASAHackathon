@@ -24,11 +24,11 @@ public class PlayerController : MonoBehaviour
 
         if (Keyboard.current.wKey.isPressed)
         {
-            zDir = 3.0f;
+            zDir = 2.0f;
         }
         else if (Keyboard.current.sKey.isPressed)
         {
-            zDir = -3.0f;
+            zDir = -2.0f;
         }
 
         float dz = zDir * speed * dt;
